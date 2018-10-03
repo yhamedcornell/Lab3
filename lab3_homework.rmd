@@ -1,0 +1,53 @@
+#Lab3_Homework
+```{r}
+library(tidyverse)
+library(ggplot2)
+library(gapminder)
+p2 = ggplot()
+p3 = ggplot()
+```
+#Creat dataset "data_2007" for year=2007:
+```{r}
+data<-gapminder
+data_2007 <- data %>%
+  filter(year==2007)
+```
+#Creat dataset "data_euro" for european countries with GDP>40000
+```{r}
+data_euro <- data_2007 %>% 
+  filter(continent=="Europe") %>% 
+  filter(gdpPercap > 40000)
+```
+#Creat dataset "data_top6GDP" for top 6 countries with highest GDP
+```{r}
+data_top6GDP <- data_2007 %>% 
+  arrange(desc(data_2007$gdpPercap))%>%
+  head(n = 6)
+```
+#Creat a plot for 2007: GDP Vs. Lifeexp, and annotate european countries with GDP>40000
+```{r}
+p2 = p2+geom_point(data=data_2007,aes(x=gdpPercap,y=lifeExp)) +
+  geom_text(aes(x=data_euro$gdpPercap,y=data_euro$lifeExp,label=data_euro$country),
+            color="blue",hjust=0, vjust=0) +
+  theme_bw()
+p2
+```
+#Creat a plot which highlight the top 6 countries with highest GDP
+```{r}
+xminimum=min(data_top6GDP$gdpPercap)-350
+xmaximum=max(data_top6GDP$gdpPercap)+350
+yminimum=min(data_top6GDP$lifeExp)-1
+ymaximum=max(data_top6GDP$lifeExp)+1
+
+p3 = p3+geom_point(data=data_2007,aes(x=gdpPercap,y=lifeExp), shape = 1) +
+geom_rect(data=data_top6GDP, mapping=aes(xmin=xminimum, xmax=xmaximum, 
+                                         ymin=yminimum, ymax=ymaximum), 
+          fill="pink",color="pink", alpha=0.1)
+p3=p3+geom_text() +
+  annotate("text", label = "Countries highest GDP", x = 45000, y = 74, size = 3,
+           colour = "black")+
+  theme_bw()
+p3
+```
+
+
